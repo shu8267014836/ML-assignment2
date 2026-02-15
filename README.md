@@ -1,6 +1,6 @@
 # ML Assignment 2 – Classification Models & Streamlit App
 
-Repository: [https://github.com/2025aa05482-bits/ML-assignment2](https://github.com/2025aa05482-bits/ML-assignment2)
+Repository: https://github.com/shu8267014836/ML-assignment2
 
 This README follows the structure required in Section 3 – Step 5 of the assignment. The full assignment document is in ML_Assignment_2.pdf.
 
@@ -91,11 +91,11 @@ ML-assignment2/
 
 ---
 
- How to run the project
+How to run the project
 
 1. Clone the repository
    bash
-   git clone https://github.com/2025aa05482-bits/ML-assignment2.git
+   git clone https://github.com/shu8267014836/ML-assignment2.git
    cd ML-assignment2
    
 
@@ -112,5 +112,4 @@ ML-assignment2/
 4. Open the URL shown (e.g. http://localhost:8501), upload adult.data (or a CSV version), set the target column (income/last column), choose a model from the dropdown, and view evaluation metrics and confusion matrix in the app.
 
 ---
-
-*This README content is included in the submitted PDF as per Section 3 – Step 5 of the assignment.*
+ 
