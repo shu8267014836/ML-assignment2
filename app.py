@@ -1182,14 +1182,17 @@ def main():
         if not _adult_data_path.exists():
             _adult_data_path = Path("adult.data")
         if _adult_data_path.exists():
-            _adult_data_bytes = _adult_data_path.read_bytes()
-            st.download_button(
-                label="📥 Download adult.data",
-                data=_adult_data_bytes,
-                file_name="adult.data",
-                mime="text/plain",
-                help="Click to download the UCI Adult sample dataset (adult.data)"
-            )
+            try:
+                _adult_data_bytes = _adult_data_path.read_bytes()
+                st.download_button(
+                    label="📥 Download adult.data",
+                    data=_adult_data_bytes,
+                    file_name="adult.data",
+                    mime="text/plain",
+                    help="Click to download the UCI Adult sample dataset (adult.data)"
+                )
+            except Exception:
+                st.caption("Sample dataset (adult.data) could not be read.")
         else:
             st.caption("Sample dataset (adult.data) not found in app folder.")
         
@@ -1221,11 +1224,16 @@ def main():
                 le = LabelEncoder()
                 target = pd.Series(le.fit_transform(target), name=target.name)
             
-            # Handle continuous target
-            unique_ratio = len(target.unique()) / len(target)
-            is_continuous = target.dtype in ['float64', 'float32'] and unique_ratio > 0.1
+            # Handle continuous target (guard against empty target)
+            n_target = len(target)
+            if n_target == 0:
+                st.error("Target column has no rows. Please upload a file with data.")
+                df, target = None, None
+            else:
+                unique_ratio = len(target.unique()) / n_target
+                is_continuous = target.dtype in ['float64', 'float32'] and unique_ratio > 0.1
             
-            if is_continuous:
+            if df is not None and target is not None and is_continuous:
                 st.warning(f"Target appears continuous ({len(target.unique())} unique values)")
                 cont_handling = st.radio(
                     "Handle continuous target",
@@ -1870,4 +1878,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        import traceback
+        st.error("The app encountered an error. See details below.")
+        st.exception(e)
+        st.code(traceback.format_exc(), language="text")
