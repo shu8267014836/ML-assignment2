@@ -6,7 +6,7 @@ This README follows the structure required in Section 3 – Step 5 of the assign
 
 ---
 
- a. Problem statement
+a. Problem statement
 
 Implement multiple classification models on a chosen dataset and build an interactive Streamlit web application to demonstrate them. The application must:
 
@@ -20,57 +20,53 @@ The assignment was performed on BITS Virtual Lab; a screenshot of execution is i
 
 ---
 
- b. Dataset description
+b. Dataset description
 
-Dataset: UCI Adult (Census Income) – adult.data
+Dataset: adult.data (loan/credit classification)
 
-- Source: UCI Machine Learning Repository (public).
-- Task: Binary classification – predict whether a person’s income is >50K or ≤50K based on census-style attributes.
-- Instances: ~32,000+ rows (meets minimum 500).
-- Features: 14 (meets minimum 12). No header row in the raw file; the app assigns default column names when needed.
-  - Numeric: age, fnlwgt (final weight), education-num, capital-gain, capital-loss, hours-per-week.
-  - Categorical: workclass, education, marital-status, occupation, relationship, race, sex, native-country.
-- Target: Income class – <=50K or >50K (binary). Encoded as 0/1 in the app.
-- Missing values: Some fields contain ? (e.g. workclass, occupation, native-country). The app supports filling (mean/mode) or dropping rows with missing values.
-- Preprocessing in the app: Target column is set (last column or auto-detected). Categorical features are label-encoded or one-hot encoded (one-hot when unique values ≤ 10). Optional feature scaling (StandardScaler, RobustScaler, MinMaxScaler) and feature selection (SelectKBest) are available.
+- Source: Public dataset (included in repo as adult.data).
+- Task: Binary classification – predict the target class (0/1) based on person and loan attributes.
+- Instances: ~45,000+ rows (meets minimum 500).
+- Features: 14 columns total; 13 features (meets minimum 12). The file has a header row and is comma-separated.
+  - Numeric: person_age, person_income, person_emp_exp, loan_amnt, loan_int_rate, loan_percent_income, cb_person_cred_hist_length, credit_score.
+  - Categorical: person_gender, person_education, person_home_ownership, loan_intent, previous_loan_defaults_on_file.
+- Target: Last column `Target` – binary (0/1). The app auto-detects it by name.
+- Preprocessing in the app: Target column is set (auto-detected by name or last column). Categorical features are label-encoded or one-hot encoded (one-hot when unique values ≤ 10). Optional feature scaling (StandardScaler, RobustScaler, MinMaxScaler) and feature selection (SelectKBest) are available. Missing values can be filled (mean/mode) or rows dropped.
 
 ---
 
- c. Models used
+c. Models used
 
 # Comparison table (evaluation metrics for all 6 models)
 
-The following metrics were calculated on the chosen dataset (adult.data, UCI Adult) using the same train/test split and preprocessing. AUC refers to ROC-AUC; MCC is Matthews Correlation Coefficient.
+The following metrics were calculated on the chosen dataset (adult.data) using the same train/test split and preprocessing. AUC refers to ROC-AUC; MCC is Matthews Correlation Coefficient.
 
 | ML Model Name              | Accuracy | AUC   | Precision | Recall | F1    | MCC   |
 |----------------------------|----------|-------|-----------|--------|-------|-------|
-| Logistic Regression        | 0.7310   | 0.8018| 0.7963    | 0.7310 | 0.7481| 0.4612|
-| Decision Tree               | 0.8361   | 0.8780| 0.8398    | 0.8361 | 0.8378| 0.6712|
-| kNN                         | 0.8093   | 0.8761| 0.8342    | 0.8093 | 0.8171| 0.6184|
-| Naive Bayes                 | 0.7815   | 0.8378| 0.8078    | 0.7815 | 0.7904| 0.5628|
-| Random Forest (Ensemble)     | 0.8487   | 0.9074| 0.8535    | 0.8487 | 0.8507| 0.6972|
-| XGBoost (Ensemble)          | 0.8644   | 0.9219| 0.8652    | 0.8644 | 0.8648| 0.7286|
+| Logistic Regression        | 0.8540   | 0.9511| 0.8906    | 0.8540 | 0.8626| —     |
+| Decision Tree              | 0.8889   | 0.9446| 0.8960    | 0.8889 | 0.8914| —     |
+| K-Nearest Neighbors        | 0.8661   | 0.9493| 0.8920    | 0.8661 | 0.8728| —     |
+| Naive Bayes                | 0.7382   | 0.9339| 0.8783    | 0.7382 | 0.7603| —     |
+| Random Forest (Ensemble)   | 0.9152   | 0.9684| 0.9166    | 0.9152 | 0.9158| —     |
+| XGBoost (Ensemble)         | 0.9327   | 0.9761| 0.9315    | 0.9327 | 0.9318| —     |
 
-Best accuracy: XGBoost (0.8644).
-
-![All models comparison](assets/results_comparison.png)
-
----
+Best accuracy: XGBoost (0.9327)
+ 
 
 # Observations on the performance of each model
 
 | ML Model Name               | Observation about model performance |
 |-----------------------------|--------------------------------------|
-| Logistic Regression     | Moderate accuracy (0.73); benefits from feature scaling. Fast to train. AUC (0.80) and MCC (0.46) indicate reasonable discrimination; performance is limited by linear decision boundary on this dataset. |
-| Decision Tree           | Good accuracy (0.84) and AUC (0.88). Interpretable but can overfit; depth and pruning matter. MCC (0.67) shows a good balance of TP, TN, FP, FN. |
-| kNN                     | Solid accuracy (0.81) and AUC (0.88). Sensitive to scaling and choice of k; weighted/distance options help. MCC (0.62) is consistent with precision and recall. |
-| Naive Bayes             | Decent accuracy (0.78) and fast training. AUC (0.84) and MCC (0.56) are lower than tree/ensemble models; independence assumption may not hold well for all features. |
-| Random Forest (Ensemble) | Strong accuracy (0.85), best AUC (0.91) among non-XGBoost models, and high MCC (0.70). Robust to noise and missing values; feature importance is available. |
-| XGBoost (Ensemble)      | Best overall: highest accuracy (0.86), AUC (0.92), and MCC (0.73). Gradient boosting suits this dataset; tuning learning rate and depth improves results further. |
+| Logistic Regression         | Good accuracy (0.85) and strong AUC (0.95). Benefits from feature scaling; fast to train. Performance is limited by linear decision boundary. |
+| Decision Tree               | Strong accuracy (0.89) and AUC (0.94). Interpretable but can overfit; depth and pruning matter. Good balance of precision and recall. |
+| K-Nearest Neighbors         | Solid accuracy (0.87) and AUC (0.95). Sensitive to scaling and choice of k; weighted/distance options help. |
+| Naive Bayes                 | Lower accuracy (0.74) but fast training. AUC (0.93); independence assumption may not hold well for all features. |
+| Random Forest (Ensemble)    | Strong accuracy (0.92) and best AUC (0.97) among non-XGBoost models. Robust to noise and missing values; feature importance is available. |
+| XGBoost (Ensemble)          | Best overall: highest accuracy (0.93), AUC (0.98), and F1 (0.93). Gradient boosting suits this dataset; tuning improves results further. |
 
 ---
 
- Project structure
+Project structure
 
 
 ML-assignment2/
@@ -78,7 +74,7 @@ ML-assignment2/
 ├── requirements.txt       # Dependencies (streamlit, scikit-learn, pandas, numpy, xgboost, plotly, etc.)
 ├── README.md              # This file (Step 5 structure)
 ├── ML_Assignment_2.pdf     # Assignment document
-├── adult.data             # UCI Adult dataset
+├── adult.data             # Dataset (13 features, binary target; ~45K rows)
 ├── assets/                # Screenshots (e.g. results_comparison.png)
 └── model/                 # Implementations of all 6 classifiers
     ├── logistic.py        # Logistic Regression
@@ -109,7 +105,7 @@ How to run the project
    streamlit run app.py
    
 
-4. Open the URL shown (e.g. http://localhost:8501), upload adult.data (or a CSV version), set the target column (income/last column), choose a model from the dropdown, and view evaluation metrics and confusion matrix in the app.
+4. Open the URL shown (e.g. http://localhost:8501), upload adult.data (or a CSV with header), set the target column (Target/last column), choose a model from the dropdown, and view evaluation metrics and confusion matrix in the app.
 
 ---
  

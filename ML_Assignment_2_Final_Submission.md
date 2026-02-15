@@ -23,14 +23,14 @@ Dataset (from README): UCI Adult (Census Income) – adult.data. Source: UCI Mac
 
 | Model | Accuracy | AUC | Precision | Recall | F1 | MCC |
 |-------|----------|-----|------------|--------|-----|-----|
-| Logistic Regression | 0.7310 | 0.8018 | 0.7963 | 0.7310 | 0.7481 | 0.4612 |
-| Decision Tree | 0.8361 | 0.8780 | 0.8398 | 0.8361 | 0.8378 | 0.6712 |
-| kNN | 0.8093 | 0.8761 | 0.8342 | 0.8093 | 0.8171 | 0.6184 |
-| Naive Bayes | 0.7815 | 0.8378 | 0.8078 | 0.7815 | 0.7904 | 0.5628 |
-| Random Forest (Ensemble) | 0.8487 | 0.9074 | 0.8535 | 0.8487 | 0.8507 | 0.6972 |
-| XGBoost (Ensemble) | 0.8644 | 0.9219 | 0.8652 | 0.8644 | 0.8648 | 0.7286 |
+| Logistic Regression | 0.8540 | 0.9511 | 0.8906 | 0.8540 | 0.8626 | — |
+| Decision Tree | 0.8889 | 0.9446 | 0.8960 | 0.8889 | 0.8914 | — |
+| K-Nearest Neighbors | 0.8661 | 0.9493 | 0.8920 | 0.8661 | 0.8728 | — |
+| Naive Bayes | 0.7382 | 0.9339 | 0.8783 | 0.7382 | 0.7603 | — |
+| Random Forest (Ensemble) | 0.9152 | 0.9684 | 0.9166 | 0.9152 | 0.9158 | — |
+| XGBoost (Ensemble) | 0.9327 | 0.9761 | 0.9315 | 0.9327 | 0.9318 | — |
 
-Best accuracy: XGBoost (0.8644).
+Best accuracy: XGBoost (0.9327).
 
 ---
 
@@ -38,12 +38,12 @@ Best accuracy: XGBoost (0.8644).
 
 *From README – observations on the performance of each model.*
 
-- Logistic Regression: Moderate accuracy (0.73); benefits from feature scaling. Fast to train. AUC (0.80) and MCC (0.46) indicate reasonable discrimination; performance is limited by linear decision boundary on this dataset.
-- Decision Tree: Good accuracy (0.84) and AUC (0.88). Interpretable but can overfit; depth and pruning matter. MCC (0.67) shows a good balance of TP, TN, FP, FN.
-- kNN: Solid accuracy (0.81) and AUC (0.88). Sensitive to scaling and choice of k; weighted/distance options help. MCC (0.62) is consistent with precision and recall.
-- Naive Bayes: Decent accuracy (0.78) and fast training. AUC (0.84) and MCC (0.56) are lower than tree/ensemble models; independence assumption may not hold well for all features.
-- Random Forest (Ensemble): Strong accuracy (0.85), best AUC (0.91) among non-XGBoost models, and high MCC (0.70). Robust to noise and missing values; feature importance is available.
-- XGBoost (Ensemble): Best overall: highest accuracy (0.86), AUC (0.92), and MCC (0.73). Gradient boosting suits this dataset; tuning learning rate and depth improves results further.
+- Logistic Regression: Good accuracy (0.85) and strong AUC (0.95). Benefits from feature scaling; fast to train. Performance is limited by linear decision boundary.
+- Decision Tree: Strong accuracy (0.89) and AUC (0.94). Interpretable but can overfit; depth and pruning matter. Good balance of precision and recall.
+- K-Nearest Neighbors: Solid accuracy (0.87) and AUC (0.95). Sensitive to scaling and choice of k; weighted/distance options help.
+- Naive Bayes: Lower accuracy (0.74) but fast training. AUC (0.93); independence assumption may not hold well for all features.
+- Random Forest (Ensemble): Strong accuracy (0.92) and best AUC (0.97) among non-XGBoost models. Robust to noise and missing values; feature importance is available.
+- XGBoost (Ensemble): Best overall: highest accuracy (0.93), AUC (0.98), and F1 (0.93). Gradient boosting suits this dataset; tuning improves results further.
 
 ---
 
