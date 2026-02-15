@@ -678,7 +678,7 @@ SKLEARN_MODELS = {
 def load_uploaded_file(uploaded_file):
     """
     Load DataFrame from uploaded file. Supports .csv, .data, and .test.
-    .data and .test are typically whitespace-delimited (space/tab).
+    .data and .test can be comma-separated (e.g. UCI with header) or whitespace-delimited.
     """
     name = (uploaded_file.name or "").lower()
     # Reset position in case it was read before
@@ -686,11 +686,32 @@ def load_uploaded_file(uploaded_file):
     if name.endswith(".csv"):
         return pd.read_csv(uploaded_file)
     if name.endswith(".data") or name.endswith(".test"):
-        # Whitespace-delimited (space/tab); .data/.test often have no header
+        uploaded_file.seek(0)
+        raw = uploaded_file.read(8192)
+        uploaded_file.seek(0)
+        if isinstance(raw, bytes):
+            raw = raw.decode("utf-8", errors="replace")
+        first_line = raw.split("\n")[0].strip()
+        uploaded_file.seek(0)
+        # If first line contains a comma, treat as comma-separated (e.g. UCI adult.data with header)
+        if "," in first_line:
+            try:
+                df = pd.read_csv(uploaded_file, sep=",", header=0)
+                if df.shape[1] >= 2:
+                    return df
+            except Exception:
+                pass
+            uploaded_file.seek(0)
+            try:
+                df = pd.read_csv(uploaded_file, sep=",", header=None)
+                df.columns = [f"feature_{i}" for i in range(df.shape[1] - 1)] + ["target"]
+                return df
+            except Exception:
+                pass
+        # Whitespace-delimited; .data/.test often have no header
         uploaded_file.seek(0)
         try:
             df = pd.read_csv(uploaded_file, sep=r"\s+", header=0)
-            # If column names look numeric (first row was data), re-read without header
             first_col = str(df.columns[0]) if len(df.columns) else ""
             try:
                 float(first_col)
