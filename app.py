@@ -5,6 +5,7 @@ A stunning, modern interactive dashboard for exploring machine learning classifi
 GitHub Repository: https://github.com/2025aa05482-bits/ML-assignment2
 """
 
+#Test Apply
 # GitHub repository URL
 GITHUB_REPO_URL = "https://github.com/2025aa05482-bits/ML-assignment2"
 
@@ -26,6 +27,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 import time
+from pathlib import Path
 
 # Try to import SMOTE for advanced class imbalance handling
 try:
@@ -1154,11 +1156,28 @@ def main():
         # Data Configuration
         st.markdown('<p class="sidebar-section-title">📁 Data Source</p>', unsafe_allow_html=True)
         
+        # 1. Download button (always shown first, before browse)
+        _adult_data_path = Path(__file__).parent / "adult.data"
+        if not _adult_data_path.exists():
+            _adult_data_path = Path("adult.data")
+        if _adult_data_path.exists():
+            _adult_data_bytes = _adult_data_path.read_bytes()
+            st.download_button(
+                label="📥 Download adult.data",
+                data=_adult_data_bytes,
+                file_name="adult.data",
+                mime="text/plain",
+                help="Click to download the UCI Adult sample dataset (adult.data)"
+            )
+        else:
+            st.caption("Sample dataset (adult.data) not found in app folder.")
+        
+        # 2. Browse / Upload (shown after download)
         df = None
         target = None
         
         uploaded_file = st.file_uploader(
-            "Upload your data file",
+            "Browse / Upload your data file",
             type=['csv', 'data', 'test'],
             help="Upload a CSV, .data, or .test file with features and target column"
         )

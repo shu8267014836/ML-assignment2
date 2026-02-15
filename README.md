@@ -1,153 +1,116 @@
-# 🧠 ML Classification Playground
+# ML Assignment 2 – Classification Models & Streamlit App
 
-**Repository:** [https://github.com/2025aa05482-bits/ML-assignment2](https://github.com/2025aa05482-bits/ML-assignment2)
+Repository: [https://github.com/2025aa05482-bits/ML-assignment2](https://github.com/2025aa05482-bits/ML-assignment2)
 
-An interactive Streamlit application for exploring, training, and comparing machine learning classification models.
+This README follows the structure required in Section 3 – Step 5 of the assignment. The full assignment document is in ML_Assignment_2.pdf.
 
-## 📋 Features
+---
 
-- **Multiple ML Models**: Compare 6 different classification algorithms
-  - Logistic Regression
-  - Decision Tree
-  - K-Nearest Neighbors (KNN)
-  - Naive Bayes
-  - Random Forest
-  - XGBoost
+ a. Problem statement
 
-- **Interactive Hyperparameter Tuning**: Adjust model parameters in real-time via the sidebar
+Implement multiple classification models on a chosen dataset and build an interactive Streamlit web application to demonstrate them. The application must:
 
-- **Built-in Datasets**: 
-  - Iris
-  - Wine
-  - Breast Cancer
-  - Synthetic (custom generated)
+- Allow dataset upload (CSV) and use one classification dataset meeting the assignment constraints (minimum 12 features, minimum 500 instances).
+- Implement all six required models: Logistic Regression, Decision Tree Classifier, K-Nearest Neighbor Classifier, Naive Bayes Classifier (Gaussian or Multinomial), Random Forest (Ensemble), and XGBoost (Ensemble).
+- For each model, compute: Accuracy, AUC Score, Precision, Recall, F1 Score, and Matthews Correlation Coefficient (MCC).
+- Provide a model selection dropdown, display evaluation metrics, and show a confusion matrix or classification report.
+- Be deployable on Streamlit Community Cloud.
 
-- **Custom Data Upload**: Upload your own CSV files for classification
+The assignment was performed on BITS Virtual Lab; a screenshot of execution is included in the submission PDF.
 
-- **Comprehensive Metrics**:
-  - Accuracy, Precision, Recall, F1 Score
-  - ROC-AUC (for binary classification)
-  - Confusion Matrix visualization
-  - Feature Importance plots
+---
 
-- **Beautiful Modern UI**: Dark theme with gradient accents and smooth animations
+ b. Dataset description
 
-## 🚀 Quick Start
+Dataset: UCI Adult (Census Income) – adult.data
 
-### Prerequisites
+- Source: UCI Machine Learning Repository (public).
+- Task: Binary classification – predict whether a person’s income is >50K or ≤50K based on census-style attributes.
+- Instances: ~32,000+ rows (meets minimum 500).
+- Features: 14 (meets minimum 12). No header row in the raw file; the app assigns default column names when needed.
+  - Numeric: age, fnlwgt (final weight), education-num, capital-gain, capital-loss, hours-per-week.
+  - Categorical: workclass, education, marital-status, occupation, relationship, race, sex, native-country.
+- Target: Income class – <=50K or >50K (binary). Encoded as 0/1 in the app.
+- Missing values: Some fields contain ? (e.g. workclass, occupation, native-country). The app supports filling (mean/mode) or dropping rows with missing values.
+- Preprocessing in the app: Target column is set (last column or auto-detected). Categorical features are label-encoded or one-hot encoded (one-hot when unique values ≤ 10). Optional feature scaling (StandardScaler, RobustScaler, MinMaxScaler) and feature selection (SelectKBest) are available.
 
-- Python 3.8 or higher
-- pip package manager
+---
 
-### Installation
+ c. Models used
 
-1. Clone/download this repository:
-```bash
-cd ML-Aaasignment2
-```
+# Comparison table (evaluation metrics for all 6 models)
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+The following metrics were calculated on the chosen dataset (adult.data, UCI Adult) using the same train/test split and preprocessing. AUC refers to ROC-AUC; MCC is Matthews Correlation Coefficient.
 
-3. Run the application:
-```bash
-streamlit run app.py
-```
+| ML Model Name              | Accuracy | AUC   | Precision | Recall | F1    | MCC   |
+|----------------------------|----------|-------|-----------|--------|-------|-------|
+| Logistic Regression        | 0.7310   | 0.8018| 0.7963    | 0.7310 | 0.7481| 0.4612|
+| Decision Tree               | 0.8361   | 0.8780| 0.8398    | 0.8361 | 0.8378| 0.6712|
+| kNN                         | 0.8093   | 0.8761| 0.8342    | 0.8093 | 0.8171| 0.6184|
+| Naive Bayes                 | 0.7815   | 0.8378| 0.8078    | 0.7815 | 0.7904| 0.5628|
+| Random Forest (Ensemble)     | 0.8487   | 0.9074| 0.8535    | 0.8487 | 0.8507| 0.6972|
+| XGBoost (Ensemble)          | 0.8644   | 0.9219| 0.8652    | 0.8644 | 0.8648| 0.7286|
 
-4. Open your browser and navigate to `http://localhost:8501`
+Best accuracy: XGBoost (0.8644).
 
-## 📁 Project Structure
+![All models comparison](assets/results_comparison.png)
 
-```
-ML-Aaasignment2/
-├── app.py              # Main Streamlit application
-├── requirements.txt    # Python dependencies
-├── README.md          # This file
-└── model/
-    ├── __init__.py    # Package initialization
-    ├── logistic.py    # Logistic Regression implementation
-    ├── dt.py          # Decision Tree implementation
-    ├── knn.py         # K-Nearest Neighbors implementation
-    ├── nb.py          # Naive Bayes implementation
-    ├── rf.py          # Random Forest implementation
-    └── xgb.py         # XGBoost implementation
-```
+---
 
-## 🎮 Usage Guide
+# Observations on the performance of each model
 
-### 1. Select Data Source
-- Choose from **Sample Dataset** or **Upload CSV**
-- For sample datasets, pick from Iris, Wine, Breast Cancer, or Synthetic
-- For CSV upload, select your target column
+| ML Model Name               | Observation about model performance |
+|-----------------------------|--------------------------------------|
+| Logistic Regression     | Moderate accuracy (0.73); benefits from feature scaling. Fast to train. AUC (0.80) and MCC (0.46) indicate reasonable discrimination; performance is limited by linear decision boundary on this dataset. |
+| Decision Tree           | Good accuracy (0.84) and AUC (0.88). Interpretable but can overfit; depth and pruning matter. MCC (0.67) shows a good balance of TP, TN, FP, FN. |
+| kNN                     | Solid accuracy (0.81) and AUC (0.88). Sensitive to scaling and choice of k; weighted/distance options help. MCC (0.62) is consistent with precision and recall. |
+| Naive Bayes             | Decent accuracy (0.78) and fast training. AUC (0.84) and MCC (0.56) are lower than tree/ensemble models; independence assumption may not hold well for all features. |
+| Random Forest (Ensemble) | Strong accuracy (0.85), best AUC (0.91) among non-XGBoost models, and high MCC (0.70). Robust to noise and missing values; feature importance is available. |
+| XGBoost (Ensemble)      | Best overall: highest accuracy (0.86), AUC (0.92), and MCC (0.73). Gradient boosting suits this dataset; tuning learning rate and depth improves results further. |
 
-### 2. Choose a Model
-- Select from 6 available classification models
-- Read the model description to understand its approach
+---
 
-### 3. Configure Hyperparameters
-- Adjust model-specific parameters using sliders and dropdowns
-- Each parameter includes a helpful description
+ Project structure
 
-### 4. Training Settings
-- Set test/train split ratio (default: 20% test)
-- Enable/disable feature scaling
-- Set random state for reproducibility
 
-### 5. Train & Evaluate
-- Click "Train Model" to start training
-- View comprehensive metrics and visualizations
-- Compare confusion matrix and metrics radar chart
+ML-assignment2/
+├── app.py                 # Streamlit app (upload, model selection, metrics, confusion matrix)
+├── requirements.txt       # Dependencies (streamlit, scikit-learn, pandas, numpy, xgboost, plotly, etc.)
+├── README.md              # This file (Step 5 structure)
+├── ML_Assignment_2.pdf     # Assignment document
+├── adult.data             # UCI Adult dataset
+├── assets/                # Screenshots (e.g. results_comparison.png)
+└── model/                 # Implementations of all 6 classifiers
+    ├── logistic.py        # Logistic Regression
+    ├── dt.py              # Decision Tree
+    ├── knn.py             # K-Nearest Neighbors
+    ├── nb.py              # Naive Bayes
+    ├── rf.py              # Random Forest
+    └── xgb.py             # XGBoost
 
-## 🔧 Model Details
 
-| Model | Best For | Key Parameters |
-|-------|----------|----------------|
-| Logistic Regression | Linear separable data | C, max_iter, solver |
-| Decision Tree | Interpretable models | max_depth, min_samples_split |
-| KNN | Small datasets | n_neighbors, weights, metric |
-| Naive Bayes | Text classification, fast training | nb_type, var_smoothing |
-| Random Forest | General purpose, feature importance | n_estimators, max_depth |
-| XGBoost | High accuracy, competitions | learning_rate, max_depth, n_estimators |
+---
 
-## 📊 Metrics Explained
+ How to run the project
 
-- **Accuracy**: Overall correct predictions / total predictions
-- **Precision**: True positives / (True positives + False positives)
-- **Recall**: True positives / (True positives + False negatives)  
-- **F1 Score**: Harmonic mean of precision and recall
-- **ROC-AUC**: Area under the ROC curve (binary classification only)
+1. Clone the repository
+   bash
+   git clone https://github.com/2025aa05482-bits/ML-assignment2.git
+   cd ML-assignment2
+   
 
-## 🎨 Customization
+2. Install dependencies
+   bash
+   pip install -r requirements.txt
+   
 
-Each model class in the `model/` directory follows a consistent interface:
+3. Run the Streamlit app
+   bash
+   streamlit run app.py
+   
 
-```python
-class ModelName:
-    def __init__(self, **hyperparameters)
-    def build_model(self)
-    def train(self, X_train, y_train)
-    def predict(self, X)
-    def predict_proba(self, X)
-    def evaluate(self, X_test, y_test)
-    
-    @staticmethod
-    def get_param_grid()      # For grid search
-    
-    @staticmethod
-    def get_param_info()      # For UI generation
-```
+4. Open the URL shown (e.g. http://localhost:8501), upload adult.data (or a CSV version), set the target column (income/last column), choose a model from the dropdown, and view evaluation metrics and confusion matrix in the app.
 
-## 📝 License
+---
 
-This project is created for educational purposes as part of ML Assignment 2.
-
-## 🤝 Contributing
-
-Feel free to extend this project by:
-- Adding new models
-- Implementing cross-validation
-- Adding model persistence (save/load)
-- Creating model comparison views
-
+*This README content is included in the submitted PDF as per Section 3 – Step 5 of the assignment.*

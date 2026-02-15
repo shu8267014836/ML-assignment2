@@ -91,7 +91,7 @@ class RandomForestModel:
             'precision': precision_score(y_test, y_pred, average='weighted', zero_division=0),
             'recall': recall_score(y_test, y_pred, average='weighted', zero_division=0),
             'f1_score': f1_score(y_test, y_pred, average='weighted', zero_division=0),
-            'confusion_matrix': confusion_matrix(y_test, y_pred)
+             'confusion_matrix': confusion_matrix(y_test, y_pred)
         }
         
         # ROC-AUC calculation with multi-class support
